@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chessy</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body data-theme="classic">
+
+  <div class="app-container">
+
+    <!-- ===================================================================
+         VIEW 1: LANDING PAGE
+         =================================================================== -->
+    <section id="view-landing" class="landing-hero">
+      <div class="hero-card">
+        <h1 class="hero-title">♚ CHESSY</h1>
+        <p class="hero-subtitle">Experience smooth gameplay, smart AI opponents, customizable board themes, and
+          real-time audio effects.</p>
+
+        <div class="hero-preview-pieces">
+          <span class="preview-piece">♔</span>
+          <span class="preview-piece">♕</span>
+          <span class="preview-piece">♖</span>
+          <span class="preview-piece">♗</span>
+          <span class="preview-piece">♘</span>
+          <span class="preview-piece">♙</span>
+        </div>
+
+        <button id="btn-start-play" class="btn-hero-play">
+          <span>Play</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         VIEW 2: GAME BOARD PAGE (Vertical Nav Layout & Mobile Drawer)
+         =================================================================== -->
+    <div id="view-game" class="game-view" style="display: none;">
+      <main class="main-content">
+
+        <!-- Left Vertical Navigation Bar (Desktop) & Top Navbar (Mobile) -->
+        <nav class="vertical-nav">
+          <div class="nav-top-section">
+            <div class="logo-area">
+              <span class="logo-icon">♔</span>
+              <span class="logo-text">Chessy</span>
+            </div>
+
+            <div class="nav-actions">
+              <button id="btn-sound" class="btn-icon" title="Toggle Sound">🔊<span class="btn-label">
+                  Sound</span></button>
+              <button id="btn-flip" class="btn-icon" title="Flip Board">🔄<span class="btn-label"> Flip</span></button>
+
+              <!-- Legal Guard Slide Switch Toggle -->
+              <div class="guard-switch-card" title="Toggle Legal Move Guard">
+                <span class="guard-switch-label">🛡️ Guard</span>
+                <label class="switch">
+                  <input type="checkbox" id="toggle-guard" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+
+              <button id="btn-open-setup" class="btn-secondary">⚙️ Setup</button>
+              <button id="btn-new-game" class="btn-primary">⚡ Reset Match</button>
+            </div>
+          </div>
+
+          <!-- Mobile Actions (Emoji-only Undo + 3-Line Hamburger Menu Button) -->
+          <div class="mobile-header-controls">
+            <button id="btn-mobile-undo" class="btn-icon-square" title="Undo Move">↩️</button>
+            <button id="btn-hamburger" class="btn-hamburger" title="Game Options">☰</button>
+          </div>
+
+          <div class="nav-footer-info">
+            <span>Chessy v1.0</span>
+          </div>
+        </nav>
+
+        <!-- Center Chess Board Area -->
+        <section class="board-section">
+          <!-- Top Player Card (Black) -->
+          <div id="card-black" class="player-card">
+            <div class="player-info-wrap">
+              <div class="player-top-row">
+                <div class="player-avatar" id="avatar-black">🤖</div>
+                <span class="player-name" id="name-black">AI Opponent (Medium)</span>
+              </div>
+              <div class="captured-tray" id="captured-black">
+                <!-- Captured white pieces rendered here -->
+              </div>
+            </div>
+            <div class="timer-badge" id="timer-black">10:00</div>
+          </div>
+
+          <!-- Chess Board -->
+          <div class="board-container">
+            <div id="board" class="board-grid"></div>
+          </div>
+
+          <!-- Bottom Player Card (White) -->
+          <div id="card-white" class="player-card active-turn">
+            <div class="player-info-wrap">
+              <div class="player-top-row">
+                <div class="player-avatar" id="avatar-white">👤</div>
+                <span class="player-name" id="name-white">Player 1</span>
+              </div>
+              <div class="captured-tray" id="captured-white">
+                <!-- Captured black pieces rendered here -->
+              </div>
+            </div>
+            <div class="timer-badge" id="timer-white">10:00</div>
+          </div>
+        </section>
+
+        <!-- Right Control Panel & History -->
+        <aside class="control-panel">
+          <h2 class="panel-title">📜 Match History & Log</h2>
+
+          <!-- Move History -->
+          <div class="history-box">
+            <div id="history-list" class="history-list">
+              <!-- Moves populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="panel-actions">
+            <button id="btn-undo" class="btn-secondary desktop-undo-btn">↩️ Undo Move</button>
+            <button id="btn-copy-history" class="btn-secondary history-btn">📋 Copy History</button>
+            <button id="btn-copy-fen" class="btn-secondary fen-btn">📋 Copy FEN</button>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+  </div>
+
+  <!-- ===================================================================
+       MOBILE SLIDE-OUT DRAWER
+       =================================================================== -->
+  <div id="drawer-backdrop" class="drawer-backdrop"></div>
+  <aside id="mobile-drawer" class="mobile-drawer">
+    <div class="drawer-header">
+      <h3 class="drawer-title">⚙️ Game Options</h3>
+      <button id="btn-close-drawer" class="btn-close-drawer">✕</button>
+    </div>
+
+    <div class="drawer-body">
+      <button id="drawer-btn-sound" class="drawer-item">🔊 Toggle Sound</button>
+      <button id="drawer-btn-flip" class="drawer-item">🔄 Flip Board</button>
+
+      <!-- Slide Switch inside Mobile Drawer -->
+      <div class="drawer-item drawer-switch-item">
+        <span>🛡️ Legal Move Guard</span>
+        <label class="switch">
+          <input type="checkbox" id="drawer-toggle-guard" checked>
+          <span class="slider round"></span>
+        </label>
+      </div>
+
+      <button id="drawer-btn-setup" class="drawer-item">⚙️ Game Setup</button>
+      <button id="drawer-btn-reset" class="drawer-item drawer-primary">⚡ Reset Match</button>
+      <button id="drawer-btn-menu" class="drawer-item">🏠 Main Menu</button>
+    </div>
+  </aside>
+
+  <!-- ===================================================================
+       POPUP MODAL: GAME SETUP CONTROLS
+       =================================================================== -->
+  <div id="modal-setup" class="modal-overlay">
+    <div class="modal-card setup-modal-card">
+      <div class="modal-header-area">
+        <h2 class="modal-title">⚙️ Game Setup & Controls</h2>
+        <p class="modal-desc">Configure your players, AI difficulty, clocks, and board aesthetics.</p>
+      </div>
+
+      <form id="form-setup" class="setup-form">
+        <!-- Game Mode -->
+        <div class="setting-group">
+          <label class="setting-label" for="select-mode">Game Mode</label>
+          <select id="select-mode" class="select-input">
+            <option value="ai" selected>Player vs AI</option>
+            <option value="pvp">Pass & Play (2 Players)</option>
+          </select>
+        </div>
+
+        <!-- Player Names -->
+        <div class="form-row-2">
+          <div class="setting-group">
+            <label class="setting-label" for="input-white-name">White Player Name</label>
+            <input type="text" id="input-white-name" class="text-input" value="Player 1" required />
+          </div>
+
+          <div class="setting-group">
+            <label class="setting-label" for="input-black-name">Black Player / AI Name</label>
+            <input type="text" id="input-black-name" class="text-input" value="AI Opponent" required />
+          </div>
+        </div>
+
+        <!-- AI Difficulty -->
+        <div class="setting-group" id="group-ai-diff">
+          <label class="setting-label" for="select-diff">AI Difficulty</label>
+          <select id="select-diff" class="select-input">
+            <option value="easy">Easy (Casual)</option>
+            <option value="medium" selected>Medium (Standard)</option>
+            <option value="hard">Hard (Master)</option>
+          </select>
+        </div>
+
+        <!-- Timer Mode -->
+        <div class="setting-group">
+          <label class="setting-label" for="select-time">Time Control</label>
+          <select id="select-time" class="select-input">
+            <option value="0">Untimed</option>
+            <option value="180">Blitz (3 Minutes)</option>
+            <option value="600" selected>Rapid (10 Minutes)</option>
+            <option value="900">Classical (15 Minutes)</option>
+          </select>
+        </div>
+
+        <!-- Theme Selector -->
+        <div class="setting-group">
+          <label class="setting-label" for="select-theme">Board Theme</label>
+          <select id="select-theme" class="select-input">
+            <option value="classic" selected>Classic Green & Cream</option>
+            <option value="cyberpunk">Cyberpunk Neon</option>
+            <option value="wood">Classic Walnut</option>
+            <option value="gold">Royal Gold</option>
+          </select>
+        </div>
+
+        <div class="setup-form-actions">
+          <button type="submit" id="btn-start-match" class="btn-primary btn-large">🚀 Start Match</button>
+          <button type="button" id="btn-cancel-setup" class="btn-secondary">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Pawn Promotion Modal -->
+  <div id="modal-promotion" class="modal-overlay">
+    <div class="modal-card">
+      <h3 class="modal-title">Pawn Promotion</h3>
+      <p class="modal-desc">Choose a piece to promote your pawn:</p>
+      <div id="promo-options" class="promotion-options">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Over / Victory Modal (Perfectly Centered Content & Buttons) -->
+  <div id="modal-gameover" class="modal-overlay">
+    <div class="modal-card gameover-card">
+      <h3 class="modal-title" id="gameover-title">👑 King Defeated!</h3>
+      <p class="modal-desc" id="gameover-desc">You won the match!</p>
+      <div class="gameover-actions">
+        <button id="btn-restart" class="btn-primary">Play Again</button>
+        <button id="btn-back-menu" class="btn-secondary">Main Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti Canvas (Full-screen overlay for win celebration) -->
+  <canvas id="confetti-canvas" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999;"></canvas>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+
+</html>
